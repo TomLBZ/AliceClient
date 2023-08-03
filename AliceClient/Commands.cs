@@ -321,8 +321,21 @@
                     return;
                 }
                 string dockerUser = arguments[1];
-                // generates a random string for the docker image name
-                string dockerImageName = Utils.GenerateRandomString();
+                // checks if "buildlog.alice" exists in the projectPath
+                string buildLogPath = Path.Combine(projectPath, "buildlog.alice");
+                string dockerImageName = "";
+                if (Directory.Exists(buildLogPath))
+                {
+                    // read the last line from the buildlog
+                    string[] buildLog = File.ReadAllLines(buildLogPath);
+                    string lastline = buildLog[^1];
+                    dockerImageName = lastline.Split('/')[1].Split(':')[0];
+                }
+                else
+                {
+                    // generates a random string for the docker image name
+                    dockerImageName = Utils.GenerateRandomString();
+                }
                 string buildCommand = $"build -t {dockerUser}/{dockerImageName}:latest -f {dockerfilePath} {projectPath}";
                 // builds the docker image
                 Console.WriteLine("Building...");
@@ -371,9 +384,8 @@
                     return;
                 }
                 // save a log file
-                string logPath = Path.Combine(projectPath, "buildlog.alice");
                 string time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-                File.WriteAllText(logPath, $"{time}: Pushed to [{dockerUser}/{dockerImageName}:latest]");
+                File.WriteAllText(buildLogPath, $"{time}: Pushed to [{dockerUser}/{dockerImageName}:latest]");
                 Console.WriteLine($"The docker image has been built and pushed to {dockerUser}/{dockerImageName}:latest.");
             }
         };
