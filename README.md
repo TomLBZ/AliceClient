@@ -28,6 +28,8 @@ alice install C:\alice
 ```
 ### Create a new project
 ```powershell
+# make sure you can pull things from github before trying this!
+# if github is not accessible, you can use a VPN or download the project template manually
 # create a new project in C-Sharp at D:\alice_projects\echo
 # Echo is the default project template, feel free to modify it using Visual Studio IDE
 # it is recommended to store the projects elsewhere from the installation directory
